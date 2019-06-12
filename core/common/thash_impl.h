@@ -143,7 +143,7 @@ static inline void TFN(clear)(TTYPENAME *hash)
 static inline void TFN(performance)(TTYPENAME *hash)
 {
     int runs_sz = 32;
-    int runs[runs_sz];
+    int runs[32];
     int cnt = 0;
     int max_run = 0;
     int min_run = hash->size;

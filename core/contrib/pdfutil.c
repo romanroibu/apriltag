@@ -602,7 +602,12 @@ void pdf_write_object(pdf_writer_t* w, pdf_object_t* o) {
 int pdf_write_full(pdf_writer_t* w, pdf_t* pdf) {
 
   size_t nobj = zarray_size(pdf->toplevel_objects);
+
+#ifdef _MSC_VER
+  size_t *toplevel_offsets = malloc(nobj * sizeof(size_t)); //TODO: not sure malloc args are correct
+#else
   size_t toplevel_offsets[nobj];
+#endif
 
   pdf_write_str(w, "%PDF-1.1\n");
 
@@ -652,8 +657,11 @@ int pdf_write_full(pdf_writer_t* w, pdf_t* pdf) {
   pdf_write_str(w, buf);
   pdf_write_str(w, "%%EOF\n");
 
-  return 0;
-  
+#ifdef _MSC_VER
+  free(toplevel_offsets);
+#endif
+
+  return 0;  
 }
 void pdf_finish_page(pdf_t* pdf) {
     

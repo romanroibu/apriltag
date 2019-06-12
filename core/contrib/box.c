@@ -233,7 +233,11 @@ image_u8_t* box_filter_border_replicate_mt(const image_u8_t* src_img,
 
     int rows_per_block = ceildivide(src_img->height, nt);
 
+#ifdef _MSC_VER
+    box_filter_info_t *bfs = malloc(nt * sizeof(box_filter_info_t)); //TODO: not sure malloc args are correct
+#else
     box_filter_info_t bfs[nt];
+#endif // _MSC_VER
 
     int y0 = 0;
     uint8_t* dst_row = dst_img->buf;
@@ -257,6 +261,9 @@ image_u8_t* box_filter_border_replicate_mt(const image_u8_t* src_img,
 
     workerpool_run(wp);
 
+#ifdef _MSC_VER
+    free(bfs);
+#endif
   }
 
   image_u32_destroy(sum_img);
@@ -368,7 +375,11 @@ image_u8_t* box_threshold_mt(const image_u8_t* src_img,
 
     int rows_per_block = ceildivide(dst_img->height, nt);
 
+#ifdef _MSC_VER
+    box_threshold_info_t *bts = malloc(nt * sizeof(box_threshold_info_t)); //TODO: not sure malloc args are correct
+#else
     box_threshold_info_t bts[nt];
+#endif
 
     int y0 = 0;
     uint8_t* dst_row = dst_img->buf;
@@ -399,6 +410,9 @@ image_u8_t* box_threshold_mt(const image_u8_t* src_img,
 
     workerpool_run(wp);
 
+#ifdef _MSC_VER
+    free(bts);
+#endif
   }
                      
 
@@ -774,7 +788,11 @@ image_u32_t* integrate_border_replicate_mt(const image_u8_t* img, int l,
 
     //printf("adding tasks...\n");
 
+#ifdef _MSC_VER
+    integrate_task_t *tasks = malloc(nt * sizeof(integrate_task_t)); //TODO: not sure malloc args are correct
+#else
     integrate_task_t tasks[nt];
+#endif
 
     for (int i=0; i<nt; ++i) {
       integrate_task_t* task = tasks + i;
@@ -792,7 +810,10 @@ image_u32_t* integrate_border_replicate_mt(const image_u8_t* img, int l,
 
     free(info.blocks);
     free(info.queue);
-    
+
+#ifdef _MSC_VER
+    free(tasks);
+#endif
   }
 
   return iimg;

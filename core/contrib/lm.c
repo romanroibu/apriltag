@@ -143,7 +143,12 @@ void lm_check_residual(int m, // size of p
 
   for (int j=0; j<m; ++j) {
 
+#ifdef _MSC_VER
+      double *xp = malloc(n * sizeof(double)); //TODO: not sure malloc args are correct
+      double *xn = malloc(n * sizeof(double)); //TODO: not sure malloc args are correct
+#else
     double xp[n], xn[n];
+#endif
 
     double pj = p[j];
     
@@ -161,6 +166,10 @@ void lm_check_residual(int m, // size of p
       Jn->data[m*i + j] = (xp[i]-xn[i])/(2.0*h);
     }
     
+#ifdef _MSC_VER
+    free(xp);
+    free(xn);
+#endif
   }
 
   printf("Analytic Jacobian transpose:\n");
@@ -189,8 +198,14 @@ static inline double lm_debug_res_to_loss(int m,
                                           double* g) {
 
   double loss = 0;
+
+#ifdef _MSC_VER
+  double *J = malloc((m*n) * sizeof(double)); //TODO: not sure malloc args are correct
+  double *x = malloc((n) * sizeof(double)); //TODO: not sure malloc args are correct
+#else
   double J[m*n];
   double x[n];
+#endif
 
   rfunc(m, n, p, x, g ? J : 0, userdata);
 
@@ -217,6 +232,11 @@ static inline double lm_debug_res_to_loss(int m,
     }
     
   }
+
+#ifdef _MSC_VER
+  free(J);
+  free(x);
+#endif
 
   return loss;
 

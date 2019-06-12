@@ -1155,7 +1155,11 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
 
         int chunksize = 1 + zarray_size(quads) / (APRILTAG_TASKS_PER_THREAD_TARGET * td->nthreads);
 
+#ifdef _MSC_VER
+        struct quad_decode_task *tasks = malloc((zarray_size(quads) / chunksize + 1) * sizeof *tasks);
+#else
         struct quad_decode_task tasks[zarray_size(quads) / chunksize + 1];
+#endif // _MSC_VER
 
         int ntasks = 0;
         for (int i = 0; i < zarray_size(quads); i+= chunksize) {
@@ -1174,6 +1178,9 @@ zarray_t *apriltag_detector_detect(apriltag_detector_t *td, image_u8_t *im_orig)
         }
 
         workerpool_run(td->wp);
+#ifdef _MSC_VER
+        free(tasks);
+#endif // _MSC_VER
 
         if (im_gray_samples != NULL) {
             image_u8_write_pnm(im_gray_samples, "debug_gray_samples.pnm");

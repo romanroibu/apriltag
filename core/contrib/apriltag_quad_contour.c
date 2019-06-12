@@ -651,8 +651,14 @@ zarray_t* quads_from_contours(const apriltag_detector_t* td,
      workers to run the qfc_task, which is just a simple wrapper on
      quad_from_contour. */
 
+#ifdef _MSC_VER
+  struct quad *wquads = malloc(nc * sizeof(struct quad)); //TODO: not sure malloc args are correct
+  int *results = malloc(nc * sizeof(int)); //TODO: not sure malloc args are correct
+#else
   struct quad wquads[nc];
   int results[nc];
+#endif
+
   const contour_info_t* ctrs = (const contour_info_t*)contours->data;
 
 #if 1
@@ -660,7 +666,11 @@ zarray_t* quads_from_contours(const apriltag_detector_t* td,
   int chunksize = 1 + nc / (APRILTAG_TASKS_PER_THREAD_TARGET * td->nthreads);
   //int chunksize = 1 + nc / td->nthreads;
 
+#ifdef _MSC_VER
+  qfc_info_t *qfcs = malloc((nc / chunksize + 1) * sizeof(qfc_info_t));
+#else
   qfc_info_t qfcs[nc / chunksize + 1];
+#endif
 
   int ntasks = 0;
 
@@ -676,6 +686,10 @@ zarray_t* quads_from_contours(const apriltag_detector_t* td,
   }
 
   workerpool_run(td->wp);
+
+#ifdef _MSC_VER
+  free(qfcs);
+#endif
 
 #else
 
@@ -715,6 +729,11 @@ zarray_t* quads_from_contours(const apriltag_detector_t* td,
   if (td->debug) {
     image_u32_write_pnm(debug_vis, "debug_quad_contours.pnm");
   }
+
+#ifdef _MSC_VER
+  free(wquads);
+  free(results);
+#endif
 
   return quads;
 
