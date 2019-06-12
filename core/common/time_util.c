@@ -29,7 +29,28 @@ of the authors and should not be interpreted as representing official policies,
 either expressed or implied, of the FreeBSD Project.
  */
 
+#include <stdlib.h>
+#include <math.h>
 #include "time_util.h"
+#ifdef _MSC_VER
+#include <windows.h>
+#endif
+
+#ifdef _MSC_VER
+ //https://stackoverflow.com/a/17283549/6055233
+void usleep(__int64 usec)
+{
+    HANDLE timer;
+    LARGE_INTEGER ft;
+
+    ft.QuadPart = -(10 * usec); // Convert to 100 nanosecond interval, negative value indicates relative time
+
+    timer = CreateWaitableTimer(NULL, TRUE, NULL);
+    SetWaitableTimer(timer, &ft, 0, NULL, NULL, 0);
+    WaitForSingleObject(timer, INFINITE);
+    CloseHandle(timer);
+}
+#endif
 
 int64_t utime_now() // blacklist-ignore
 {
@@ -63,11 +84,21 @@ void utime_to_timespec(int64_t v, struct timespec *ts)
 int32_t timeutil_usleep(int64_t useconds)
 {
     // unistd.h function
+#ifdef _MSC_VER
+    usleep(useconds);
+    return 0;
+#else
     return usleep(useconds);
+#endif
 }
 
 uint32_t timeutil_sleep(unsigned int seconds)
 {
     // unistd.h function
+#ifdef _MSC_VER
+    Sleep(seconds);
+    return 0;
+#else
     return sleep(seconds);
+#endif
 }

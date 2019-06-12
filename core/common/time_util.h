@@ -32,10 +32,22 @@ either expressed or implied, of the FreeBSD Project.
 #ifndef _TIME_UTIL_H
 #define _TIME_UTIL_H
 
+#include <stdbool.h>
 #include <stdint.h>
+
+#if defined(_MSC_VER) || defined(__MINGW32__)
+#include "../sys/times.h"
+#include "time.h"
+#else
 #include <sys/time.h>
 #include <time.h>
+#endif //_MSC_VER || __MINGW32__
+
+#ifdef _MSC_VER
+#include <io.h>
+#else
 #include <unistd.h>
+#endif //_MSC_VER
 
 #ifdef __cplusplus
 extern "C" {

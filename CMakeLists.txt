@@ -1,6 +1,8 @@
 project(apriltag C CXX)
 
-cmake_minimum_required ( VERSION 2.8 )
+cmake_minimum_required ( VERSION 3.5.1 )
+
+add_definitions(-D_USE_MATH_DEFINES) #win
 
 if (POLICY CMP0042)
 cmake_policy(SET CMP0042 NEW)
@@ -8,8 +10,8 @@ endif(POLICY CMP0042)
 
 find_package (Threads REQUIRED)
 
-set(EXTRA_FLAGS "-Wall -Wsign-compare -g -march=native ${CMAKE_THREAD_LIBS_INIT}")
-set(EXTRA_C_FLAGS "${EXTRA_FLAGS} -std=gnu99")
+set(EXTRA_FLAGS "-Wall -g -march=native ${CMAKE_THREAD_LIBS_INIT}")
+set(EXTRA_C_FLAGS "${EXTRA_FLAGS} -std=gnu11")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_FLAGS}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_C_FLAGS}")
@@ -26,6 +28,11 @@ include_directories(core core/common core/contrib)
 
 include(FindPkgConfig)
 pkg_search_module(OPENCV opencv>=2.3 opencv-2.3.1 opencv-3.0.0)
+
+#if(WIN32 AND MSVC)
+#   add_subdirectory(pthreads-win32)
+#endif()
+add_subdirectory(pthreads-win32)
 
 if(OPENCV_FOUND)
   include_directories(${OPENCV_INCLUDE_DIRS})

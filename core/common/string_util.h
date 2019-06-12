@@ -38,6 +38,10 @@ either expressed or implied, of the FreeBSD Project.
 
 #include "zarray.h"
 
+#ifdef _MSC_VER
+#define __attribute__(x)
+#endif
+
 #ifdef __cplusplus
 extern "C" {
 #endif

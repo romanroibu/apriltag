@@ -1,6 +1,7 @@
 set(sources
   apriltag.c apriltag_quad_thresh.c tag16h5.c tag25h7.c tag25h9.c 
   tag36h10.c tag36h11.c tag36artoolkit.c g2d.c apriltag_family.c
+  times.c
   common/zarray.c 
   common/zhash.c common/zmaxheap.c common/unionfind.c common/matd.c 
   common/image_u8.c common/pnm.c common/image_f32.c common/image_u32.c 
@@ -10,9 +11,14 @@ set(sources
   contrib/apriltag_quad_contour.c contrib/apriltag_vis.c
   contrib/pose.c)
 
+
 include_directories(common contrib .)
 
-add_library(apriltag SHARED ${sources})
+#file(GLOB lib_pthreads ../../pthreads-win32/*.c) #win only
+#include_directories(../../pthreads-win32) #win only
+
+add_library(apriltag SHARED ${sources} )
+target_link_libraries (apriltag PTHREADS_LIBRARY) #win only
 
 add_executable(apriltag_demo apriltag_demo.c)
 target_link_libraries(apriltag_demo apriltag ${CMAKE_THREAD_LIBS_INIT} m)

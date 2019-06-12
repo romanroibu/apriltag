@@ -38,7 +38,12 @@ either expressed or implied, of the FreeBSD Project.
 #include <string.h>
 #include <stdio.h>
 #include <inttypes.h>
+
+#ifdef _MSC_VER
+#include "sys/times.h"
+#else
 #include <sys/time.h>
+#endif
 
 #include "common/image_u8.h"
 #include "common/image_u32.h"
@@ -54,6 +59,11 @@ either expressed or implied, of the FreeBSD Project.
 
 #ifndef M_PI
 # define M_PI 3.141592653589793238462643383279502884196
+#endif
+
+#if defined(__MINGW32__) || defined(_MSC_VER)
+#define srandom srand
+#define random rand
 #endif
 
 extern zarray_t *apriltag_quad_gradient(apriltag_detector_t *td, image_u8_t *im);

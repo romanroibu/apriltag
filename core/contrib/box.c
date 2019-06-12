@@ -1,12 +1,25 @@
 #include "box.h"
-#include "image_u32.h"
+
+#ifdef _MSC_VER
+#include <malloc.h>
+#define alloca _alloca
+#else
 #include <alloca.h>
+#endif //_MSC_VER
 
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
+
+#ifdef _MSC_VER
+#include "..\common\image_u32.h"
+#include "..\pthreads-win32\pthread.h"
+#else
+#include "image_u32.h"
 #include <pthread.h>
+#endif
+
 #include <math.h>
 
 #ifdef __linux
@@ -17,6 +30,12 @@ int my_memalign(void** pptr, size_t alignment, size_t size) {
   int fail = (!*pptr);
   return fail;
 }
+
+#elif defined(_MSC_VER)
+
+//https://stackoverflow.com/questions/33696092
+#define posix_memalign(p, a, s) (((*(p)) = _aligned_malloc((s), (a))), *(p) ?0 :errno)
+#define my_memalign posix_memalign
 
 #else
 

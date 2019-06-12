@@ -487,10 +487,10 @@ const zarray_t *getopt_get_extra_args(getopt_t *gopt)
     return gopt->extraargs;
 }
 
-static int max(int a, int b)
-{
-    return a > b ? a : b;
-}
+//static int max(int a, int b)
+//{
+//    return a > b ? a : b;
+//}
 
 void getopt_do_usage(getopt_t * gopt)
 {

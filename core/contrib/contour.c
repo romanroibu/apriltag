@@ -538,7 +538,7 @@ size_t unique(void* base, size_t nel, size_t width,
               int(*compar)(const void*, const void*)) {
 
   char* first = base;
-  const char* last = base + nel * width;
+  const char* last = (char)base + nel * width;
 
   if (last == first) { 
     return 0;

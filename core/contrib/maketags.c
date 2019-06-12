@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <inttypes.h>
 #include <ctype.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <stdlib.h>
 #include <math.h>
 

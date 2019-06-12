@@ -1,9 +1,9 @@
 #ifndef _BOX_H
 #define _BOX_H
 
-#include "image_u8.h"
-#include "image_u32.h"
-#include "workerpool.h"
+#include "..\common\image_u8.h"
+#include "..\common\image_u32.h"
+#include "..\common\workerpool.h"
 
 #ifdef __cplusplus
 extern "C" {
